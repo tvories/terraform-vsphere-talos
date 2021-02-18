@@ -19,16 +19,46 @@
 // }
 
 locals {
-  talos_config_raw = yamldecode(file(var.talos_config_path))
-  talos_cluster_name = local.talos_config_raw.context
+//   talos_config_raw = yamldecode(file(var.talos_config_path))
+//   talos_cluster_name = local.talos_config_raw.context
   // talos_
+  scripts_dir = "${path.module}/scripts"
 }
 
-output "talos_config" {
-  value = local.talos_config_raw
+// output "talos_config" {
+//   value = local.talos_config_raw
+// }
+// output "talos_context" {
+//   value = local.tconf_context
+// }
+
+# Make sure Talos ISO and CLI are available for the selected version
+resource "null_resource" "talos_download" {
+  provisioner "local-exec" {
+    interpreter = [var.shell, "-c"]
+    command     = "${local.scripts_dir}/talos_download.sh"
+
+    environment = {
+      ISO_DIR         = abspath(var.conf_dir)
+      TALOS_VERSION   = var.talos_version
+      TALOSCTL_UPDATE = var.talos_cli_update
+    }
+  }
 }
-output "talos_context" {
-  value = local.tconf_context
+
+# Generate the Talos Machine (Ed25519), Kubernetes API server (RSA 4096) and etcd (RSA 4096) certificates
+data "external" "talos_certificates" {
+  program = [var.shell, "${local.scripts_dir}/talos_certificates.sh"]
+
+  query = {
+    conf_dir = abspath(var.conf_dir)
+  }
+
+  depends_on = [null_resource.talos_download]
+}
+
+output "certs" {
+    value = data.external.talos_certificates
 }
 
 // vCenter specific settings

@@ -94,7 +94,7 @@ variable "controlplane_nodes" {
   description = "Number of control plane servers"
   type        = number
   default     = 1
-  
+
   validation {
     condition     = var.controlplane_nodes == 1 || var.controlplane_nodes == 3
     error_message = "Number of control plane nodes must be either one, or three (HA cluster)."
@@ -182,7 +182,7 @@ variable "vsphere_nic_type" {
 variable "ip_gateway" {
   description = "The network gateway address IE: 192.168.1.1"
   type        = string
-  
+
   validation {
     condition = var.ip_gateway != ""
     error_message = "Must define network gateway."
@@ -207,7 +207,7 @@ variable "dns_domain" {
 variable "ip_address_base" {
   description = "The base network/subnet IE: 192.168.1"
   type        = string
-  
+
   validation {
     condition = var.ip_address_base != ""
     error_message = "Must provide base network."
@@ -271,6 +271,16 @@ variable "talos_config_path" {
       condition   = var.talos_config_path != ""
       error_message = "Talos config file path must be provided."
     }
+}
+variable "conf_dir" {
+  description = "The directory used for storing Talos ISO and cluster build configuration files (default is /tmp)"
+  type        = string
+  default     = "/tmp"
+
+  validation {
+    condition     = var.conf_dir != ""
+    error_message = "The Talos configuration directory must be identified."
+  }
 }
 variable "talos_ca_crt" {
   description = "talos ca cert"
