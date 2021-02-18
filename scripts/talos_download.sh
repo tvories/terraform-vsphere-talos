@@ -1,5 +1,3 @@
-#!/bin/sh
-
 URL="https://github.com/talos-systems/talos/releases/download/${TALOS_VERSION}/"
 HOST_ARCH=$(uname -m | awk '{print ($1=="x86_64") ? "amd64" : "arm64"}')
 

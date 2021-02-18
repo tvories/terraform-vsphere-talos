@@ -1,5 +1,3 @@
-#!/bin/sh
-#
 # This script is used for generation of various Talos cluster certificates
 
 CONF_DIR="/tmp"

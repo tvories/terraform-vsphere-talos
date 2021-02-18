@@ -284,31 +284,40 @@ variable "conf_dir" {
 }
 variable "talos_ca_crt" {
   description = "talos ca cert"
+  default = ""
 }
 variable "talos_ca_key" {
   description = "talos ca key"
+  default = ""
 }
 variable "talos_join_token" {
   description = "Token used to join a system to the cluster"
   #TODO: Figure out a way to generate this sanely
+  default = ""
 }
 variable "kube_enc_key" { #TODO: change to generated and get rid of this?
   description = "The key used for the encryption of secret data at rest"
+  default = ""
 }
 variable "kube_token" {
   description = "The [bootstrap token](https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/) used to join the cluster."
+  default = ""
 }
 variable "kube_ca_crt" {
   description = "The base64 encoded root certificate authority cert used by Kubernetes."
+  default = ""
 }
 variable "kube_ca_key" {
   description = "The base64 encoded root certificate authority key used by Kubernetes."
+  default = ""
 }
 variable "etcd_ca_crt" {
   description = "The `ca` is the root certificate authority of the PKI."
+  default = ""
 }
 variable "etcd_ca_key" {
   description = "The `ca` is the root certificate authority of the PKI."
+  default = ""
 }
 variable "allow_master_scheduling" {
   description = "Allows running workload on master nodes."
