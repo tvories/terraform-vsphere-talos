@@ -84,8 +84,8 @@ resource "vsphere_virtual_machine" "controlplane" {
   }
 }
 
-output "controlplane_config" {
-  description = "This is the value of the guestinfo.talos.config for the controlplane nodes"
-  // value = { for vm in vsphere_virtual_machine.controlplane : vm => vsphere_virtual_machine.controlplane[vm].extra_config }
-  value = vsphere_virtual_machine.controlplane.*.extra_config
-}
+# output "controlplane_config" {
+#   description = "This is the value of the guestinfo.talos.config for the controlplane nodes"
+#   // value = { for vm in vsphere_virtual_machine.controlplane : vm => vsphere_virtual_machine.controlplane[vm].extra_config }
+#   value = vsphere_virtual_machine.controlplane.*.extra_config
+# }

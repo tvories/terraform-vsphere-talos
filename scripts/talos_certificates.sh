@@ -46,14 +46,14 @@ function get_b64_strings {
     ADMIN_CRT=$(base64 -i admin.crt)
     ADMIN_KEY=$(base64 -i admin.key)
 	else # Host is Linux, as other platforms are not tested to be evaluated here
-    TALOS_CRT=$(base64 talos.crt)
-    TALOS_KEY=$(base64 talos.key)
-    KUBE_CRT=$(base64 kubernetes.crt)
-    KUBE_KEY=$(base64 kubernetes.key)
-    ETCD_CRT=$(base64 etcd.crt)
-    ETCD_KEY=$(base64 etcd.key)
-    ADMIN_CRT=$(base64 admin.crt)
-    ADMIN_KEY=$(base64 admin.key)
+    TALOS_CRT=$(base64 -w 0 talos.crt)
+    TALOS_KEY=$(base64 -w 0 talos.key)
+    KUBE_CRT=$(base64 -w 0 kubernetes.crt)
+    KUBE_KEY=$(base64 -w 0 kubernetes.key)
+    ETCD_CRT=$(base64 -w 0 etcd.crt)
+    ETCD_KEY=$(base64 -w 0 etcd.key)
+    ADMIN_CRT=$(base64 -w 0 admin.crt)
+    ADMIN_KEY=$(base64 -w 0 admin.key)
   fi
 
   # Delete certificate files
