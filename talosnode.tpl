@@ -231,6 +231,7 @@ cluster:
         # Extra certificate subject alternative names for the API server's certificate.
       certSANs:
       - ${cluster_endpoint}
+      - ${hostname}
 
         # # The container image used in the API server manifest.
         # image: k8s.gcr.io/kube-apiserver-amd64:v1.20.1

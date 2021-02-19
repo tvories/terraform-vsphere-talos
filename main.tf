@@ -23,6 +23,7 @@ locals {
 //   talos_cluster_name = local.talos_config_raw.context
   // talos_
   scripts_dir = "${path.module}/scripts"
+  talos_ovf_url = "https://github.com/talos-systems/talos/releases/download/${var.talos_version}/vmware-amd64.ova"
 }
 
 // output "talos_config" {
@@ -107,7 +108,7 @@ data "vsphere_network" "network" {
 # Generate the talosconfig file
 #TODO: iterate this
 resource "local_file" "talosconfig" {
-  # for_each = vsphere_virtual_machine.controlplane
+#   for_each = vsphere_virtual_machine.controlplane
   content = templatefile("${path.module}/talosconfig.tpl", {
     tf_cluster_name    = var.kube_cluster_name
     tf_endpoints       = "${var.kube_cluster_name}.${var.dns_domain}"

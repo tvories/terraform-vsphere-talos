@@ -41,9 +41,10 @@ variable "vsphere_network" {
   description = "What is the name of the VM Network?"
   type        = string
 }
-// variable "talos_ovf_url" {
-//   description = "URL to the talos ovf file"
-// }
+# variable "talos_ovf_url" {
+#   description = "URL to the talos ovf file"
+#   d
+# }
 
 // Talos settings
 variable "talos_version" {
@@ -96,7 +97,7 @@ variable "controlplane_nodes" {
   default     = 1
 
   validation {
-    condition     = var.controlplane_nodes == 1 || var.controlplane_nodes == 3
+    condition     = var.controlplane_nodes != 1 || var.controlplane_nodes != 3
     error_message = "Number of control plane nodes must be either one, or three (HA cluster)."
   }
 }
