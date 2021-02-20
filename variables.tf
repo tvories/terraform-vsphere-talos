@@ -283,11 +283,11 @@ variable "conf_dir" {
     error_message = "The Talos configuration directory must be identified."
   }
 }
-variable "talos_ca_crt" {
+variable "talos_crt" {
   description = "talos ca cert"
   default = ""
 }
-variable "talos_ca_key" {
+variable "talos_key" {
   description = "talos ca key"
   default = ""
 }
@@ -304,20 +304,28 @@ variable "kube_token" {
   description = "The [bootstrap token](https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/) used to join the cluster."
   default = ""
 }
-variable "kube_ca_crt" {
+variable "kube_crt" {
   description = "The base64 encoded root certificate authority cert used by Kubernetes."
   default = ""
 }
-variable "kube_ca_key" {
+variable "kube_key" {
   description = "The base64 encoded root certificate authority key used by Kubernetes."
   default = ""
 }
-variable "etcd_ca_crt" {
+variable "etcd_crt" {
   description = "The `ca` is the root certificate authority of the PKI."
   default = ""
 }
-variable "etcd_ca_key" {
+variable "etcd_key" {
   description = "The `ca` is the root certificate authority of the PKI."
+  default = ""
+}
+variable "admin_crt" {
+  description = "the admin crt for conecting to k8"
+  default = ""
+}
+variable "admin_key" {
+  description = "the admin key for connecting to k8"
   default = ""
 }
 variable "allow_master_scheduling" {

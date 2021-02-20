@@ -1,10 +1,9 @@
+#!/bin/bash
 # This script is used for generation of various Talos cluster certificates
-
-CONF_DIR="/tmp"
-HOST_ARCH=$(uname -m | awk '{print ($1=="x86_64") ? "amd64" : "arm64"}')
+# The output is a terraform tfvars file
 
 function check_deps {
-  [[ -f $(which jq) ]] || { echo "jq command not detected in path, please install it";  exit 404; }
+  [[ -f $(which talosctl) ]] || { echo "talosctl command not detected in path, please install it";  exit 404; }
 }
 
 function parse_inputs {
@@ -16,8 +15,6 @@ function parse_inputs {
 }
 
 function gen_certs {
-  mkdir -p "${CONF_DIR}"
-  cd "${CONF_DIR}"
 
   # Generate Talos Machine CA certificate (Ed25519)
   talosctl gen ca --hours 87600 --organization talos
@@ -36,7 +33,7 @@ function gen_certs {
 
 function get_b64_strings {
   # The current directory, because of gen_certs function, is CONF_DIR
-	if (uname -a | grep 'Darwin' >/dev/null); then # Host is macOS
+	if (uname -a | grep 'Darwin' > /dev/null); then # Host is macOS
     TALOS_CRT=$(base64 -i talos.crt)
     TALOS_KEY=$(base64 -i talos.key)
     KUBE_CRT=$(base64 -i kubernetes.crt)
@@ -57,22 +54,28 @@ function get_b64_strings {
   fi
 
   # Delete certificate files
-  find "${CONF_DIR}" -type f -not -name '*.iso' -not -name '*.yaml' -not -name 'talosconfig' -delete
+  rm -f talos.crt talos.key \
+  kubernetes.crt kubernetes.key \
+  etcd.crt etcd.key \
+  admin.crt admin.key \
+  talos.sha256 etcd.sha256 admin.csr kubernetes.sha256
+}
 
-  jq -n \
-    --arg host_arch "${HOST_ARCH}" \
-    --arg talos_crt "${TALOS_CRT}" \
-    --arg talos_key "${TALOS_KEY}" \
-    --arg kube_crt "${KUBE_CRT}" \
-    --arg kube_key "${KUBE_KEY}" \
-    --arg etcd_crt "${ETCD_CRT}" \
-    --arg etcd_key "${ETCD_KEY}" \
-    --arg admin_crt "${ADMIN_CRT}" \
-    --arg admin_key "${ADMIN_KEY}" \
-    '{"host_arch": ($host_arch), "talos_crt": ($talos_crt), "talos_key": ($talos_key), "kube_crt": ($kube_crt), "kube_key": ($kube_key), "etcd_crt": ($etcd_crt), "etcd_key": ($etcd_key), "admin_crt": ($admin_crt), "admin_key": ($admin_key)}'
+function write_tfvars {
+  # Writes the values to a terraform tfvars file
+  tee talos_crts.auto.tfvars > /dev/null <<EOF
+  talos_crt = "${TALOS_CRT}"
+  talos_key = "${TALOS_KEY}"
+  kube_crt = "${KUBE_CRT}"
+  kube_key = "${KUBE_KEY}"
+  etcd_crt = "${ETCD_CRT}"
+  etcd_key = "${ETCD_KEY}"
+  admin_crt = "${ADMIN_CRT}"
+  admin_key = "${ADMIN_KEY}"
+EOF
 }
 
 check_deps &&
-parse_inputs &&
 gen_certs &&
-get_b64_strings
+get_b64_strings &&
+write_tfvars
