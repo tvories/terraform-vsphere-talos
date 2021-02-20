@@ -6,14 +6,6 @@ function check_deps {
   [[ -f $(which talosctl) ]] || { echo "talosctl command not detected in path, please install it";  exit 404; }
 }
 
-function parse_inputs {
-  eval "$(jq -r '@sh "CONF_DIR=\(.conf_dir)"')"
-  if [[ -z "${CONF_DIR}" ]]; then
-    echo "Failed to parse input arguments"
-    exit 400 # http 400 - bad request
-  fi
-}
-
 function gen_certs {
 
   # Generate Talos Machine CA certificate (Ed25519)
@@ -29,6 +21,19 @@ function gen_certs {
   talosctl gen key --name admin
   talosctl gen csr --ip "127.0.0.1" --key admin.key
   talosctl gen crt  --name admin --hours 87600 --ca talos --csr admin.csr
+}
+
+function random {
+  # Only returns even numbered values
+  # I am not clever enough right now to return odd random string
+  num=$((${1} / 2))
+  xxd -l ${num} -c ${num} -p < /dev/random
+}
+
+function gen_tokens {
+  TALOS_TOKEN="$(random 6).$(random 16)"
+  KUBE_TOKEN="$(random 6).$(random 16)"
+  KUBE_ENC_KEY="$(head -c 32 /dev/urandom | base64)"
 }
 
 function get_b64_strings {
@@ -72,10 +77,14 @@ function write_tfvars {
   etcd_key = "${ETCD_KEY}"
   admin_crt = "${ADMIN_CRT}"
   admin_key = "${ADMIN_KEY}"
+  talos_token = "${TALOS_TOKEN}"
+  kube_token = "${KUBE_TOKEN}"
+  kube_enc_key = "${KUBE_ENC_KEY}"
 EOF
 }
 
 check_deps &&
 gen_certs &&
+gen_tokens &&
 get_b64_strings &&
 write_tfvars

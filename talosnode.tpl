@@ -4,12 +4,12 @@ persist: true # Indicates whether to pull the machine config upon every boot.
 # Provides machine specific configuration options.
 machine:
     type: ${type} # Defines the role of the machine within the cluster.
-    token: ${talos_join_token} # The `token` is used by a machine to join the PKI of the cluster.
+    token: ${talos_token} # The `token` is used by a machine to join the PKI of the cluster.
 %{ if type != "worker" ~}
     # The root certificate authority of the PKI.
     ca:
-        crt: ${talos_ca_crt}
-        key: ${talos_ca_key}
+        crt: ${talos_crt}
+        key: ${talos_key}
 %{ endif ~}
     # Used to provide additional options to the kubelet.
     kubelet: {}
@@ -219,9 +219,9 @@ cluster:
 %{ endif ~}
     # The base64 encoded root certificate authority used by Kubernetes.
     ca:
-      crt: ${kube_ca_crt}
+      crt: ${kube_crt}
 %{ if type != "worker" ~}
-      key: ${kube_ca_key}
+      key: ${kube_key}
 %{ else ~}
       key: ""
 %{ endif ~}
@@ -254,8 +254,8 @@ cluster:
     etcd:
       # The `ca` is the root certificate authority of the PKI.
       ca:
-        crt: ${etcd_ca_crt}
-        key: ${etcd_ca_key}
+        crt: ${etcd_crt}
+        key: ${etcd_key}
 
         # # The container image used to create the etcd service.
         # image: gcr.io/etcd-development/etcd:v3.4.14

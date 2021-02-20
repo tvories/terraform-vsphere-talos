@@ -90,6 +90,13 @@ variable "kube_dns_domain" {
   }
 }
 
+# Generic Node
+variable "ova_disk_name" {
+  description = "The name of the OVA disk"
+  type        = string
+  default     = "disk-1000-0.vmdk"
+}
+
 // Control plane systems
 variable "controlplane_nodes" {
   description = "Number of control plane servers"
@@ -291,7 +298,7 @@ variable "talos_key" {
   description = "talos ca key"
   default = ""
 }
-variable "talos_join_token" {
+variable "talos_token" {
   description = "Token used to join a system to the cluster"
   #TODO: Figure out a way to generate this sanely
   default = ""
