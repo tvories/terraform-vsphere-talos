@@ -64,6 +64,9 @@ resource "vsphere_virtual_machine" "node" {
       etcd_crt                   = var.etcd_crt
       etcd_key                   = var.etcd_key
       tf_allow_master_scheduling = var.allow_master_scheduling
+      custom_cni                 = var.custom_cni
+      cni_type                   = var.cni_type
+      cni_urls                   = var.cni_urls
     }))
   }
 

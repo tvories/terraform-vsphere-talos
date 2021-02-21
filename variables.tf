@@ -359,6 +359,34 @@ variable "registries" {
   default     = ""
 }
 
+# Kube Cluster settings
+variable "custom_cni" {
+  description = "Customize CNI settings?"
+  type        = bool
+  default     = false
+}
+variable "cni_type" {
+  description = "Name of the cni type IE calico, cillium"
+  type = string
+  default = ""
+}
+
+variable "cni_urls" {
+  description = "URLs for kube CNI settings"
+  type        = list(string)
+  default     = []
+}
+variable "time_server" {
+  description = "Single NTP timeserver URL"
+  type = string
+  default = ""
+}
+variable "extra_manifests" {
+  description = "List of extra manifests to install"
+  type = list(string)
+  default = []
+}
+
 // TODO: Figure out how to do an object
 // variable "controlplane_specs" {
 //   description = "The vSphere VM specs used for building Talos cluster's control plane nodes (default is 2 CPU, 2GB RAM, and 8GB disk)"
