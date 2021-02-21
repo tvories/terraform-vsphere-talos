@@ -58,11 +58,12 @@ data "vsphere_network" "network" {
 #TODO: iterate this
 resource "local_file" "talosconfig" {
   content = templatefile("${path.module}/talosconfig.tpl", {
-    tf_cluster_name    = var.kube_cluster_name
-    tf_endpoints       = local.controlplane_specs[0].ip_address
-    tf_talos_ca_crt    = var.talos_crt
-    tf_talos_admin_crt = var.admin_crt
-    tf_talos_admin_key = var.admin_key
+    talos_cluster_endpoint = var.talos_cluster_endpoint
+    talos_cluster_name     = var.talos_cluster_name
+    tf_endpoints           = local.controlplane_specs[0].ip_address
+    tf_talos_ca_crt        = var.talos_crt
+    tf_talos_admin_crt     = var.admin_crt
+    tf_talos_admin_key     = var.admin_key
   })
   filename = "${abspath(var.conf_dir)}/talosconfig"
 }

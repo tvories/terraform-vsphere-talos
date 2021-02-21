@@ -55,7 +55,7 @@ resource "vsphere_virtual_machine" "node" {
       tf_registries              = var.registries
       kube_cluster_name          = var.kube_cluster_name
       tf_talos_version           = var.talos_version
-      cluster_endpoint           = format("%s.%s", var.kube_cluster_name, var.dns_domain)
+      cluster_endpoint           = var.talos_cluster_endpoint
       kube_dns_domain            = var.kube_dns_domain
       kube_token                 = var.kube_token
       kube_enc_key               = var.kube_enc_key

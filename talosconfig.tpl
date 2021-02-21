@@ -1,6 +1,6 @@
-context: ${tf_cluster_name}
+context: ${talos_cluster_name}
 contexts:
-  ${tf_cluster_name}:
+  ${talos_cluster_name}:
     endpoints:
       - ${tf_endpoints}
     nodes:

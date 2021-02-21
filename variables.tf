@@ -57,6 +57,21 @@ variable "talos_version" {
     error_message = "The specified Talos version is invalid."
   }
 }
+variable "talos_cluster_endpoint" {
+  description = "The DNS or load balancer IP endpoint name IE talos.yourdomain.local"
+  type = string
+  default = ""
+
+  validation {
+    condition = var.talos_cluster_endpoint != ""
+    error_message = "You must provide an endpoint DNS name or IP."
+  }
+}
+variable "talos_cluster_name" {
+  description = "The talosconfig cluster name used for context"
+  type = string
+  default = "talos"
+}
 variable "talos_cli_update" {
   description = "Whether Talos CLI (talosctl) should be installed/updated or not, for the specified Talos version (default is true)"
   type        = bool
@@ -72,7 +87,7 @@ variable "kube_version" {
 variable "kube_cluster_name" {
   description = "The Kubernetes cluster name (default is talos)"
   type        = string
-  default     = "talos"
+  default     = "cluster.local"
 
   validation {
     condition     = var.kube_cluster_name != ""
