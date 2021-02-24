@@ -193,7 +193,7 @@ machine:
 cluster:
     # Provides control plane specific configuration options.
     controlPlane:
-        endpoint: https://${cluster_endpoint}:6443 # Endpoint is the canonical controlplane endpoint, which can be an IP address or a DNS hostname.
+        endpoint: https://${cluster_endpoint}:${talos_cluster_endpoint_port} # Endpoint is the canonical controlplane endpoint, which can be an IP address or a DNS hostname.
 %{ if type != "worker" ~}
     clusterName: ${kube_cluster_name} # Configures the cluster's name.
 %{ endif ~}
@@ -207,8 +207,8 @@ cluster:
         serviceSubnets:
             - 10.96.0.0/12
 
-        # # The CNI used.
-%{ if custom_cni ~}
+        # The CNI used.
+%{if type == "init" && custom_cni ~}
         cni:
           name: custom
           urls:

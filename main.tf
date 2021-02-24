@@ -21,13 +21,10 @@ locals {
     }
   ]
   node_specs = concat(local.worker_specs, local.controlplane_specs)
-  # controlplane_ips = local.controlplane_specs.*.ip_address
 }
-output "ips" {
-  value = tolist(local.controlplane_specs.*.ip_address)
-}
-
-// vCenter specific settings
+# ----------------------------------------------------------------------------
+#   vSphere resources
+# ----------------------------------------------------------------------------
 data "vsphere_datacenter" "datacenter" {
   name = var.vsphere_datacenter
 }
@@ -47,15 +44,13 @@ data "vsphere_host" "host" {
   name          = var.vsphere_host
   datacenter_id = data.vsphere_datacenter.datacenter.id
 }
-
-// Network
 data "vsphere_network" "network" {
   name          = var.vsphere_network
   datacenter_id = data.vsphere_datacenter.datacenter.id
 }
 
 # Generate the talosconfig file
-#TODO: iterate this
+#TODO: add all controlplane endpoints
 resource "local_file" "talosconfig" {
   content = templatefile("${path.module}/talosconfig.tpl", {
     talos_cluster_endpoint = var.talos_cluster_endpoint
@@ -65,52 +60,78 @@ resource "local_file" "talosconfig" {
     tf_talos_admin_crt     = var.admin_crt
     tf_talos_admin_key     = var.admin_key
   })
-  filename = "${abspath(var.conf_dir)}/talosconfig"
+  filename = "${abspath(var.talos_config_path)}/talosconfig"
 }
 
-# resource "local_file" "initconfig" {
-#   content = templatefile("./talosnode.tpl", {
-#       type              = "init"
-#     #   talos_join_token  = var.talos_join_token
-#       talos_join_token  = format("%s.%s", substr(random_string.random_token[0].result, 7, 6), substr(random_string.random_token[0].result, 17, 16))
-#     #   talos_ca_crt      = var.talos_ca_crt
-#       talos_ca_crt      = data.external.talos_certificates.result.talos_crt
-#     #   talos_ca_key      = var.talos_ca_key
-#       talos_ca_key      = data.external.talos_certificates.result.talos_key
-#       customize_network = var.customize_network
-#       node_ip_address   = "${var.ip_address_base}.${var.controlplane_ip_address_start}"
-#       ip_netmask        = var.ip_netmask
-#       ip_gateway        = var.ip_gateway
-#       nameservers       = var.nameservers
-#       tf_kube_version   = var.kube_version
-#       hostname          = "${var.controlplane_name_prefix}-1"
-#       tf_interface      = "eth0"
-#       tf_network        = "${var.ip_address_base}.0"
-#       tf_node_fqdn      = "${var.controlplane_name_prefix}-1.${var.dns_domain}"
-#       tf_os_disk        = "/dev/sda"
-#       #TODO: add ability to add extra_disks
-#       #TODO: add ability to add extra registries
-#       tf_add_disks               = var.add_disks
-#       tf_extra_disks             = var.extra_disks
-#       tf_add_registries          = var.add_registries
-#       tf_registries              = var.registries
-#       kube_cluster_name          = var.kube_cluster_name
-#       tf_talos_version           = var.talos_version
-#       cluster_endpoint           = format("%s.%s", var.kube_cluster_name, var.dns_domain)
-#       kube_dns_domain            = var.kube_dns_domain
-#       kube_token                 = format("%s.%s", substr(random_string.random_token[1].result, 5, 6), substr(random_string.random_token[1].result, 15, 16))
-#       kube_enc_key               = base64encode(random_string.random_key[0].result)
-#       kube_ca_crt                = data.external.talos_certificates.result.kube_crt
-#       kube_ca_key                = data.external.talos_certificates.result.kube_key
-#       etcd_ca_crt                = data.external.talos_certificates.result.etcd_crt
-#       etcd_ca_key                = data.external.talos_certificates.result.etcd_key
-#       tf_allow_master_scheduling = var.allow_master_scheduling
-#     })
-#   filename = "${abspath(var.conf_dir)}/init.yaml"
+# ----------------------------------------------------------------------------
+#   Talos Nodes
+# ----------------------------------------------------------------------------
+resource "vsphere_virtual_machine" "node" {
+  count                      = length(local.node_specs)
+  name                       = local.node_specs[count.index].name
+  resource_pool_id           = data.vsphere_resource_pool.resource_pool.id
+  host_system_id             = data.vsphere_host.host.id
+  datastore_id               = data.vsphere_datastore.datastore.id
+  datacenter_id              = data.vsphere_datacenter.datacenter.id
+  wait_for_guest_net_timeout = -1 # don't wait for guest since talos doesn't have vmtools
+  num_cpus = local.node_specs[count.index].cpus
+  memory   = local.node_specs[count.index].memory
+  ovf_deploy {
+    remote_ovf_url = local.talos_ovf_url
+  }
 
-#   depends_on = [data.external.talos_certificates]
-# }
+  # Disk
+  disk {
+    name = var.ova_disk_name
+    size = var.controlplane_disk_size
+  }
 
-# output "talos_ca_crt" {
-#   value = data.external.talos_certificates.result.talos_crt
-# }
+  # VM networking
+  network_interface {
+    network_id   = data.vsphere_network.network.id
+    adapter_type = var.vsphere_nic_type
+  }
+
+  # for vsphere-kubernetes integration
+  enable_disk_uuid = "true"
+
+  # sets the talos configuration
+  extra_config = {
+    "guestinfo.talos.config" = base64encode(templatefile("${path.module}/talosnode.tpl", {
+      type                       = local.node_specs[count.index].type
+      talos_token                = var.talos_token
+      talos_crt                  = var.talos_crt
+      talos_key                  = var.talos_key
+      customize_network          = var.customize_network
+      node_ip_address            = local.node_specs[count.index].ip_address
+      ip_netmask                 = var.ip_netmask
+      ip_gateway                 = var.ip_gateway
+      nameservers                = var.nameservers
+      hostname                   = local.node_specs[count.index].name
+      tf_interface               = "eth0"
+      tf_node_fqdn               = "${local.node_specs[count.index].name}.${var.dns_domain}"
+      tf_os_disk                 = "/dev/sda"
+      kube_cluster_name          = var.kube_cluster_name
+      tf_talos_version           = var.talos_version
+      cluster_endpoint           = var.talos_cluster_endpoint
+      talos_cluster_endpoint_port      = var.talos_cluster_endpoint_port
+      kube_dns_domain            = var.kube_dns_domain
+      kube_token                 = var.kube_token
+      kube_enc_key               = var.kube_enc_key
+      kube_crt                   = var.kube_crt
+      kube_key                   = var.kube_key
+      etcd_crt                   = var.etcd_crt
+      etcd_key                   = var.etcd_key
+      tf_allow_master_scheduling = var.allow_master_scheduling
+      custom_cni                 = var.custom_cni
+      cni_urls                   = var.cni_urls
+    }))
+  }
+
+  lifecycle {
+    ignore_changes = [
+      disk[0].io_share_count,
+      disk[0].thin_provisioned,
+    ]
+  }
+}
