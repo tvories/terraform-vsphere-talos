@@ -34,8 +34,8 @@ provider "vsphere" {
 The required module variables:
 (Please read the [terraform registry documentation](https://registry.terraform.io/modules/tvories/talos/vsphere/latest?tab=inputs) for the full list of available inputs)
 
-|Variable | Type     | Description |
-|---------|------------|
+| Variable | Type     | Description |
+| ------------ | ------------ | ------------ |
 | `controlplane_nodes` | number | The number of control plane nodes (between 1 and 3) you want to have in your cluster |
 |`worker_nodes`| number | The number of woker nodes you want in your cluster |
 |`vsphere_datacenter` | string | The name of the datacenter in vSphere you want the cluster to be deployed to |
