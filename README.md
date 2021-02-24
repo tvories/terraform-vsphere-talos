@@ -14,6 +14,41 @@ This module has been heavily inspired by @masoudbahar https://github.com/masoudb
 
 ## Usage
 
+Check out the [examples](examples/) directory for full configurations.
+
+### Required for your Module
+
+The [`terraform_vsphere_provider`](https://registry.terraform.io/providers/hashicorp/vsphere/latest/docs) needs to be declared in your project.  The bare minimum you must provide:
+
+```terraform
+provider "vsphere" {
+  user           = var.vsphere_user
+  password       = var.vsphere_password
+  vsphere_server = var.vsphere_server
+
+  # If you have a self-signed cert
+  allow_unverified_ssl = true
+}
+```
+
+The required module variables:
+(Please read the [terraform registry documentation](https://registry.terraform.io/modules/tvories/talos/vsphere/latest?tab=inputs) for the full list of available inputs)
+
+|Variable | Type     | Description |
+|---------|------------|
+| `controlplane_nodes` | number | The number of control plane nodes (between 1 and 3) you want to have in your cluster |
+|`worker_nodes`| number | The number of woker nodes you want in your cluster |
+|`vsphere_datacenter` | string | The name of the datacenter in vSphere you want the cluster to be deployed to |
+|`vsphere_resource_pool` | string | The name of the resource pool you want the cluster to be deployed to |
+|`vsphere_datastore` | string | The name of the datastore you want the cluster to be deployed to |
+|`vsphere_host` | string | The name of the host you want to cluster to be deployed to (this won't be required in the future if you specify a resource pool) |
+|`vsphere_cluster` | string | The cluster the talos cluster will be deployed to |
+|`vsphere_network`| string | The network you want to connect the talos cluster VMs to|
+|`talos_cluster_endpoint`| string | The load balancer IP or DNS name of the cluster endpoints |
+|`ip_gateway` | string | The gateway address for the node network |
+|`ip_netmask` | string | The CIDR notation for the node network (this will be improved in a future release) |
+|`dns_domain` | string | The node (not kubernetes cluster) dns domain |
+
 ## Configuration Values
 
 ## Features
@@ -35,3 +70,4 @@ This module has been heavily inspired by @masoudbahar https://github.com/masoudb
 - [ ] Add ability to specify your own init/controlplane/join yaml configuration files
 - [ ] Move all key generation to terraform (waiting on https://github.com/hashicorp/terraform-provider-tls/pull/85)
 - [ ] Support the ability to specify kubernetes cluster network customization
+- [ ] Support the ability to deploy the cluster to different datastores

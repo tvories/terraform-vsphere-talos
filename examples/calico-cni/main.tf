@@ -47,21 +47,21 @@ module "talos" {
   source = "../../"
   controlplane_nodes = 1
   worker_nodes = 2
-  vsphere_datacenter = "Home"
+  vsphere_datacenter = "DC1"
   vsphere_resource_pool  = "Resources"
-  vsphere_datastore      = "LUN03"
-  vsphere_host           = "esx4.mcbadass.local"
+  vsphere_datastore      = "Datastore1"
+  vsphere_host           = "esx.yourdomain.local"
   vsphere_cluster        = "Cluster-01"
-  vsphere_network        = "VLAN 80 - K8s"
+  vsphere_network        = "VLAN80"
   talos_config_path      = "./talos-conf/"
-  talos_cluster_endpoint = "talos.mcbadass.local"
+  talos_cluster_endpoint = "talos.mydomain.local"
   ip_gateway       = "192.168.80.1"
   ip_netmask       = "/24"
   nameservers      = [
     "192.168.1.240",
     "192.168.1.241"
   ]
-  dns_domain                    = "mcbadass.local"
+  dns_domain                    = "mydomain.local"
   ip_address_base               = "192.168.80"
   controlplane_ip_address_start = "20"
   worker_ip_address_start       = "120"
