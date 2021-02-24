@@ -14,7 +14,7 @@ This module has been heavily inspired by @masoudbahar https://github.com/masoudb
 
 ## Usage
 
-Check out the [examples](examples/) directory for full configurations.
+Check out the [examples](https://github.com/tvories/terraform-vsphere-talos/tree/master/examples) directory for full configurations.
 
 ### Required for your Module
 
@@ -52,13 +52,11 @@ The required module variables:
 |`controlplane_ip_address_start` | string | The final octet of the IP address for the first controlplane server IP IE: `20`  The way this is being done is dumb.  This will be fixed in a future release |
 |`worker_ip_address_start` | string| The final octet of the IP address for the first worker server IP IE: `120`.  Will be fixed in a future release |
 
-Talos expects base64 encoded certificates and tokens in order to bootstrap the cluster.  This module will eventually be able to generate these values without using `talosctl`, but for now, these values needed to be provided to the module.  [This script](scripts/talos_certificates.sh) will generate the required certificates and output a terraform compatible file with the required fields.
+Talos expects base64 encoded certificates and tokens in order to bootstrap the cluster.  This module will eventually be able to generate these values without using `talosctl`, but for now, these values needed to be provided to the module.  [This script](https://github.com/tvories/terraform-vsphere-talos/blob/master/scripts/talos_certificates.sh) will generate the required certificates and output a terraform compatible file with the required fields.
 
 Paste the generated values in the module or provide your own values.
 
 ```
-# Generated values using talos_certificates.sh
-# Don't use these.  Generate your own
 talos_crt
 talos_key
 kube_crt
@@ -74,7 +72,7 @@ kube_enc_key
 
 
 ## Configuration Values
-See the [terraform-vsphere-talos\(https://registry.terraform.io/modules/tvories/talos/vsphere/latest?tab=inputs) inputs page for the full list of available inputs.
+See the [terraform-vsphere-talos](https://registry.terraform.io/modules/tvories/talos/vsphere/latest?tab=inputs) inputs page for the full list of available inputs.
 
 ## Features
 
