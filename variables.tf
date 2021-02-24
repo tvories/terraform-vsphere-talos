@@ -290,7 +290,7 @@ variable "talos_config_path" {
       Relative path: ./config/talosconfig or ./talosconfig
     EOT
     type      = string
-    default   = ""
+    default   = "./"
 
     validation {
       condition   = var.talos_config_path != ""

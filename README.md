@@ -48,8 +48,33 @@ The required module variables:
 |`ip_gateway` | string | The gateway address for the node network |
 |`ip_netmask` | string | The CIDR notation for the node network (this will be improved in a future release) |
 |`dns_domain` | string | The node (not kubernetes cluster) dns domain |
+|`ip_address_base` | string | The first 3 octets of your node network IE: `192.168.80`.  This will be improved in a future release |
+|`controlplane_ip_address_start` | string | The final octet of the IP address for the first controlplane server IP IE: `20`  The way this is being done is dumb.  This will be fixed in a future release |
+|`worker_ip_address_start` | string| The final octet of the IP address for the first worker server IP IE: `120`.  Will be fixed in a future release |
+
+Talos expects base64 encoded certificates and tokens in order to bootstrap the cluster.  This module will eventually be able to generate these values without using `talosctl`, but for now, these values needed to be provided to the module.  [This script](scripts/talos_certificates.sh) will generate the required certificates and output a terraform compatible file with the required fields.
+
+Paste the generated values in the module or provide your own values.
+
+```
+# Generated values using talos_certificates.sh
+# Don't use these.  Generate your own
+talos_crt
+talos_key
+kube_crt
+kube_key
+etcd_crt
+etcd_key
+admin_crt
+admin_key
+talos_token
+kube_token
+kube_enc_key
+```
+
 
 ## Configuration Values
+See the [terraform-vsphere-talos\(https://registry.terraform.io/modules/tvories/talos/vsphere/latest?tab=inputs) inputs page for the full list of available inputs.
 
 ## Features
 
