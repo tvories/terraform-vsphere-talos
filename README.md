@@ -18,7 +18,7 @@ Check out the [examples](https://github.com/tvories/terraform-vsphere-talos/tree
 
 ### Required for your Module
 
-The [`terraform_vsphere_provider`](https://registry.terraform.io/providers/hashicorp/vsphere/latest/docs) needs to be declared in your project.  The bare minimum you must provide:
+The [`terraform_vsphere_provider`](https://registry.terraform.io/providers/hashicorp/vsphere/latest/docs) needs to be declared in your project.  The minimum you must provide:
 
 ```terraform
 provider "vsphere" {
@@ -79,18 +79,3 @@ See the [terraform-vsphere-talos](https://registry.terraform.io/modules/tvories/
 ## Limitations
 
 ## Compatability
-
-## To Do
-- [ ] Support multiple disks
-- [ ] Optionally output talos yaml configurations
-- [ ] Figure out way to add all controlplane endpoints to talosconfig.tpl
-- [ ] Handle the IP address asignment better.  Choose a base block and then allow all nodes to pick from the pool
-- [ ] remove the dependency on a vsphere host and allow for cluster selection
-- [ ] add support to deploy from local ovf instead of url
-- [ ] Support different kubernetes versions.  Update variables.
-- [ ] Add ability to specify additional manifests
-- [ ] Add ability to specify timeserver
-- [ ] Add ability to specify your own init/controlplane/join yaml configuration files
-- [ ] Move all key generation to terraform (waiting on https://github.com/hashicorp/terraform-provider-tls/pull/85)
-- [ ] Support the ability to specify kubernetes cluster network customization
-- [ ] Support the ability to deploy the cluster to different datastores

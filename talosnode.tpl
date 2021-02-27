@@ -105,14 +105,23 @@ machine:
     # # Extra certificate subject alternative names for the machine's certificate.
 
     # # Uncomment this to enable SANs.
-    # certSANs:
-    #     - 10.0.0.10
+    certSANs:
+%{if customize_network ~}
+      - ${node_ip_address}
+%{ endif ~}
+      - ${cluster_endpoint}
     #     - 172.16.0.10
     #     - 192.168.0.10
 
     # # Used to partition, format and mount additional disks.
 
     # # MachineDisks list example.
+%{ if add_extra_node_disk ~}
+    disks:
+      - device: /dev/sdb
+        partitions:
+          - mountpoint: /var/mnt/extra
+%{ else ~}
     # disks:
     #     - device: /dev/sdb # The name of the disk to use.
     #       # A list of partitions to create on the disk.
@@ -125,6 +134,7 @@ machine:
     #           # size: 100 MB
     #           # # Precise value in bytes.
     #           # size: 1073741824
+%{ endif ~}
 
     # # Allows the addition of user specified files.
 

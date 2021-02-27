@@ -201,6 +201,19 @@ variable "worker_disk_size" {
   type        = number
   default     = 8
 }
+variable "node_extra_disk" {
+  description = "Extra disk information"
+  type = list(object({
+    size = number
+    mountpoint = string
+  }))
+  default = []
+}
+variable "add_extra_node_disk" {
+  description = "Whether or not to add an additional disk."
+  type = bool
+  default = false
+}
 
 # Networking
 variable "vsphere_nic_type" {
