@@ -14,6 +14,7 @@ locals {
         talos_token                 = var.talos_token
         talos_crt                   = var.talos_crt
         talos_key                   = var.talos_key
+        talos_version               = var.talos_version
         customize_network           = var.customize_network
         node_ip_address             = "${var.ip_address_base}.${var.worker_ip_address_start + i}"
         ip_netmask                  = var.ip_netmask

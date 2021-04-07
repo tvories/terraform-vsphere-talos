@@ -63,7 +63,7 @@ variable "vsphere_network" {
 variable "talos_version" {
   description = "The version of Talos OS, used for building the cluster; the version string should start with 'v'"
   type        = string
-  default     = "v0.8.4"
+  default     = "v0.9.1"
 
   validation {
     condition     = var.talos_version != "" && substr(var.talos_version, 0, 1) == "v"

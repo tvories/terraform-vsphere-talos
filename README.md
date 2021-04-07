@@ -1,7 +1,7 @@
 # Talos on vSphere
 [![GitHub](https://img.shields.io/github/license/tvories/terraform-vsphere-talos?style=flat)](https://github.com/tvories/terraform-vsphere-talos/blob/main/LICENSE)
 
-The **terraform-vsphere-talos** module that can be used to build a [Talos](https://www.talos.dev/docs/v0.8/introduction/what-is-talos/#why-talos) based, fully compliant, [Kubernetes](https://kubernetes.io) cluster, using VMware vSphere and terraform.  Providing a (relatively) few variables will automatically spin up talos infrastructure on your vsphere environment.
+The **terraform-vsphere-talos** module that can be used to build a [Talos](https://www.talos.dev/docs/v0.9/introduction/what-is-talos/#why-talos) based, fully compliant, [Kubernetes](https://kubernetes.io) cluster, using VMware vSphere and terraform.  Providing a (relatively) few variables will automatically spin up talos infrastructure on your vsphere environment.
 
 This module has been heavily inspired by @masoudbahar https://github.com/masoudbahar/terraform-virtualbox-talos.
 
@@ -9,7 +9,7 @@ This module has been heavily inspired by @masoudbahar https://github.com/masoudb
 
 * Terraform > 0.13.x
 * An existing vSphere environment with enough resources
-* [talosctl](https://www.talos.dev/docs/v0.8/introduction/quickstart/#talosctl) commandline tool to generate the necessary certificates (eventually terraform will be able to handle this)
+* [talosctl](https://www.talos.dev/docs/v0.9/introduction/quickstart/#talosctl) commandline tool to generate the necessary certificates (eventually terraform will be able to handle this)
   * You can also provide your own certificate values instead of letting the script generate them
 
 ## Usage

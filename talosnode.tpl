@@ -93,7 +93,7 @@ machine:
     # Used to provide instructions for installations.
     install:
         disk: /dev/sda # The disk used for installations.
-        image: ghcr.io/talos-systems/installer:v0.8.3 # Allows for supplying the image used to perform the installation.
+        image: ghcr.io/talos-systems/installer:${talos_version} # Allows for supplying the image used to perform the installation.
         bootloader: true # Indicates if a bootloader should be installed.
         wipe: false # Indicates if the installation disk should be wiped at installation time.
 
